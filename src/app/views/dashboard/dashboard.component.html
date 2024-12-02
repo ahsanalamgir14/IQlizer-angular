@@ -1,0 +1,22 @@
+
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Dashboards</mat-card-title>
+    <mat-card-subtitle>{{ selectedDashboard }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <div class="level-1">
+    <label for="productCB">Select Dashboard:</label>
+    <select id="productCB" name="productCB" class="custom-login-input" (change)="onProductSelectionChange($event)" >
+      <option *ngFor="let product of products">{{ product.name }}</option>
+    </select>
+  </div>
+
+  <mat-card-content>
+    <div *ngIf="safeUrl" class="level-2">
+    <iframe [src]="safeUrl" id="iframe"></iframe>
+  </div>
+  </mat-card-content>
+
+
+</mat-card>

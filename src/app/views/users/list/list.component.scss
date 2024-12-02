@@ -1,0 +1,25 @@
+.user-list {
+  margin: 20px;
+}
+table {
+  width: 100%;
+}
+
+.button-panel {
+  margin-top: 20px;
+}
+
+.mat-cell {
+  margin: 20px 5px;
+}
+
+/* Add these styles to your component's CSS or globally */
+
+.button-panel {
+  display: flex;
+  justify-content: space-between;
+}
+
+.paypal-container {
+  margin-left: 20px; /* Adjust margin as needed */
+}

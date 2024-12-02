@@ -1,0 +1,26 @@
+<html lang="en">
+  <body>
+<div class="dashbaord">
+  <h2>{{header}}</h2>
+  <div class="button-panel">
+        <button (click)="onGoBack()" mat-raised-button color="primary">
+          Go Back
+        </button>
+         
+      </div>
+      <div>
+        <mat-progress-spinner
+          *ngIf="loading"
+          color="primary"
+          mode="indeterminate"
+          diameter="15"
+        >
+        </mat-progress-spinner>
+      </div>
+<div id="experience-container"></div>
+
+</div>
+
+</body>
+</html>
+   

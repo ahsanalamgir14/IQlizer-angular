@@ -1,0 +1,101 @@
+<div class="col-md-12">
+  <form [formGroup]="productForm" (submit)="submit()">
+    <mat-card class="card">
+      <mat-card-title>Create new Dataset</mat-card-title>
+      <mat-card-content>
+         <mat-form-field >
+           
+          <input
+            matInput
+            type="file"
+            formControlName="file"
+            placeholder="Select a file"
+            (change)="onChange($event)"
+            style="align:right"
+          />
+         <mat-error *ngIf="fileErrorMessage">{{ fileErrorMessage }}</mat-error>
+           </mat-form-field>
+           
+           
+        <mat-form-field>
+          <mat-label>Enter Dataset name</mat-label>
+          <input
+            matInput
+            placeholder="Dataset name"
+            formControlName="name"
+            id="name"
+            required
+          />
+          <mat-error *ngIf="name?.invalid">Name is required</mat-error>
+        </mat-form-field>
+       
+          <input
+            type="hidden"
+            matInput
+            placeholder="Product price"
+            formControlName="price"
+            value="1"
+          />
+         
+   
+        <mat-form-field>
+          <mat-label>Enter Analysis name</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="sku"
+            id="sku"
+            placeholder="Enter analysis name"
+          />
+        </mat-form-field>
+        
+       
+        <mat-form-field>
+          <mat-label>Enter Dashboard ID</mat-label>
+         <input
+            matInput
+            type="text"
+            formControlName="category"
+            id="category"
+           placeholder="Enter dashboard ID"
+          />
+        </mat-form-field>
+        
+         <mat-form-field appearance="fill">
+              <mat-label>Select Date Format</mat-label>
+              <mat-select formControlName="dateFormat">
+                <mat-option *ngFor="let format of dateFormats" [value]="format.value">
+                  {{ format.text }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+        <mat-card-footer>
+          <div class="button-panel">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="(submit)"
+              [disabled]="!productForm.valid"
+            >
+              Submit
+            </button>
+            <button mat-raised-button color="warn" (click)="cancel()">
+              Cancel
+            </button>
+            
+        <mat-progress-spinner
+          *ngIf="loading"
+          color="primary"
+          mode="indeterminate"
+          diameter="15"
+        >
+        </mat-progress-spinner>
+     
+          </div>
+          
+        </mat-card-footer>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>

@@ -1,0 +1,65 @@
+.custom-dashboard-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #f2f2f2;
+}
+
+.dashboard-title {
+  color: #e74c3c;
+}
+
+.custom-select-container {
+  margin-top: 20px;
+}
+
+.custom-login-input {
+  background-color: #d5dbdb;
+  color: #2c3e50;
+  padding: 8px;
+}
+
+.custom-iframe-container {
+  margin-top: 20px;
+}
+
+#iframe {
+  border: 2px solid var(--iframe-border-color);
+  width: 100%;
+  height: 100vh;
+  margin-top: auto;
+}
+
+:host {
+  --background-color: var(--background-color);
+  --text-color: var(--text-color);
+  --primary-color: var(--primary-color);
+  --accent-color: var(--accent-color);
+  --button-background: var(--button-background);
+  --button-text-color: var(--button-text-color);
+
+ 
+}
+
+.level-0 {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.level-1 select {
+  background-color: #fff; 
+}
+
+.level-2 iframe {
+  border: 2px solid var(--primary-color); 
+}
+
+.level-4 {
+  color: var(--primary-color); 
+}
+
+/* Your Angular component's SCSS file */
+button{
+  background-color: var(--button-background);
+  color: var(--button-text-color);
+}
+
