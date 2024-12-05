@@ -16,7 +16,7 @@
         <div class="sidebar-icon-container">
           <mat-icon svgIcon="saas-commerce" class="logo"></mat-icon>
         </div>
-        <mat-divider></mat-divider>
+        <mat-divider class="divider"></mat-divider>
         <mat-nav-list>
         <ng-container *ngFor="let navItem of navItems">
           <ng-container *ngIf="!(navItem.name === 'Datasets' || navItem.name === 'Users') || (userRole$ | async) === 'TenantAdmin'">

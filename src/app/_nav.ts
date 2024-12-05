@@ -23,7 +23,7 @@ export const navItems: INavData[] = [
   {
     name: 'Shipping Rates',
     url: '/shipping_rates',
-    icon: 'supervisor_account',
+    icon: 'local_shipping',
   },
   
 ];

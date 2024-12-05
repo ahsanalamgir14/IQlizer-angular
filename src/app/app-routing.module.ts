@@ -47,8 +47,8 @@ export const routes: Routes = [
       {
         path: 'shipping_rates',
         loadChildren: () =>
-          import('./views/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
+          import('./views/shipping-rates/shipping-rates.module').then(
+            (m) => m.ShippingRatesModule
           ),
       },
     ],
