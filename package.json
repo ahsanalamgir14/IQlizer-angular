@@ -24,6 +24,7 @@
     "@aws-amplify/ui-angular": "~2.4.14",
     "application": "file:",
     "aws-amplify": "~4.3.27",
+    "axios": "^1.7.9",
     "bootstrap": "~5.2.0",
     "chart.js": "~3.8.0",
     "chartjs-plugin-datalabels": "~2.0.0",

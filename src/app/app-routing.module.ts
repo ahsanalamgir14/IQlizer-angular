@@ -45,10 +45,17 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'shipping_rates',
+        path: 'shipping-rates',
         loadChildren: () =>
           import('./views/shipping-rates/shipping-rates.module').then(
             (m) => m.ShippingRatesModule
+          ),
+      },
+      {
+        path: 'tracking-page',
+        loadChildren: () =>
+          import('./views/tracking-page/tracking-page.module').then(
+            (m) => m.TrackingPageModule
           ),
       },
     ],
