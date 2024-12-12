@@ -36,6 +36,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { LabelViewerComponent } from './views/label-viewer/label-viewer.component';
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     NavComponent,
     AuthComponent,
     UnauthorizedComponent,
+    LabelViewerComponent,
   ],
   imports: [
     AmplifyAuthenticatorModule,

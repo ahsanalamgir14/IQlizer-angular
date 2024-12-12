@@ -4,6 +4,7 @@ import { NavComponent } from './nav/nav.component';
 import { AuthComponent } from './views/auth/auth.component';
 import { UnauthorizedComponent } from './views/error/unauthorized.component';
 import { CognitoGuard } from './cognito.guard';
+import { LabelViewerComponent } from './views/label-viewer/label-viewer.component';
 
 
 export const routes: Routes = [
@@ -57,6 +58,10 @@ export const routes: Routes = [
           import('./views/tracking-page/tracking-page.module').then(
             (m) => m.TrackingPageModule
           ),
+      },
+      {
+        path: 'zpl-test',
+        component: LabelViewerComponent
       },
     ],
   },

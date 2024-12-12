@@ -1,0 +1,24 @@
+<!-- <div>
+    <button (click)="convertZpl()">Convert ZPL to Image</button>
+    <img *ngIf="imageSrc" [src]="imageSrc" alt="Converted ZPL" />
+</div> -->
+
+
+<!-- src/app/app.component.html -->
+<!-- <div style="text-align:center;">
+    <h1>Convert ZPL to Image</h1>
+
+    <button (click)="convertZplToImage()">Convert ZPL to Image</button>
+
+    <div *ngIf="imageUrl">
+        <h3>Generated Label:</h3>
+        <img [src]="imageUrl" alt="Converted ZPL Label" />
+    </div>
+</div> -->
+
+<div>
+    <button (click)="convertZplToImage()">Convert ZPL to Image</button>
+    <div *ngIf="imageUrl">
+        <img [src]="imageUrl" alt="Converted Label" />
+    </div>
+</div>
