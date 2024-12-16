@@ -104,7 +104,7 @@
         </div>
 
          <ng-template #showData>
-            <div class="row tracking-page mt-4" *ngIf="upsData.length > 0; else noUpsdata">
+            <div class="row tracking-page mt-4" *ngIf="showUps && upsData.length > 0; else noUpsdata">
                 <h2 class="text-center mb-4">Tracking Timeline: UPS</h2>
                 <div *ngFor="let group of upsEvents" class="col-md-12">
                     <div class="container d-flex align-items-start">

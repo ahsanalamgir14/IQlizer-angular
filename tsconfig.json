@@ -4,10 +4,9 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "typeRoots": ["node_modules/@types", "src"],
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
-    "noImplicitOverride": false,
+    "strict": true,
+    "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -21,16 +20,12 @@
     "module": "es2020",
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
-    "lib": ["es2020", "dom"],
-    "paths": {
-      "stream": [ "./node_modules/stream-browserify" ]
-    },
+    "lib": ["es2020", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": false,
-    "strictTemplates": false,
-    "allowedCommonJsDependencies": [ "*" ]
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

@@ -15,4 +15,5 @@ export class Rate {
   delivery_date_guaranteed: boolean;
   est_delivery_days: string | number | null;
   carrier_account_id: string;
+  selected?: boolean; // Optional property to track selection
 }

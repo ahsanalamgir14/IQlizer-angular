@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import axios from 'axios';
-
 
 @Component({
   selector: 'app-tracking-page',
@@ -125,7 +123,7 @@ export class TrackingPageComponent implements OnInit {
       (response: any) => {
         console.log('API Response 1:', response);
         if(response.body) {
-          this.upsData = response.body.shipmentDetails.trackingEvents;
+          this.upsData = response.body.trackingEvents;
           this.upsEventsByDate();
         }
       },
@@ -137,55 +135,24 @@ export class TrackingPageComponent implements OnInit {
     this.isLoading = false;
   }
 
-  // getUspsShipment(params: any) {
-  //   const url = `${environment.host}/dev/trackerUSPS`;
-  
-  //   axios({
-  //     method: 'get',
-  //     url: url,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     params: params,
-  //   })
-  //     .then((response) => {
-  //       console.log('API Response:', response.data);
-  
-  //       if (response.data && response.data.shipmentDetails) {
-  //         this.uspsData = response.data.shipmentDetails.trackingEvents;
-  //         this.uspsEventsByDate();
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching tracking data:', error);
-  //       console.log('Unable to fetch tracking details. Please try again later.');
-  //       this.isLoading = false;
-  //     })
-  //     .finally(() => {
-  //       this.isLoading = false;
-  //     });
-  // }
-  
-  getUspsShipment(body: any) {
-    const url = 'https://8xhibt3xrf.execute-api.us-east-2.amazonaws.com/dev/trackerUSPS';
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    // Create a custom GET request with a body
-    const req = new HttpRequest('GET', url, body, { headers });
-
-    // Send the request
-    this.http.request(req).subscribe(
+  getUspsShipment(params: any) {
+    this.http.get(`${environment.host}/dev/trackerUSPS`, { params }).subscribe(
       (response: any) => {
-        if (response.body) {
-          console.log('API Response:', response.body);
+        console.log('API Response: 2', response);
+
+        if(response.body) {
+          
+          console.log(response.body.shipmentDetails);
+          this.uspsData = response.body.trackingEvents;
+          this.uspsEventsByDate();
         }
       },
       (error) => {
-        console.error('Error:', error);
+        console.error('Error fetching tracking data:', error);
+        console.log('Unable to fetch tracking details. Please try again later.');
       }
     );
+    this.isLoading = false;
   }
 
   getFedexShipment(params: any) {
@@ -206,6 +173,30 @@ export class TrackingPageComponent implements OnInit {
     );
     this.isLoading = false;
   }
+  getCarrierName(trackingId: string): string {
+    const carrierPatterns = [
+        { name: 'UPS', pattern: /\b(1Z ?[0-9A-Z]{3} ?[0-9A-Z]{3} ?[0-9A-Z]{2} ?[0-9A-Z]{4} ?[0-9A-Z]{3} ?[0-9A-Z]|[\dT]\d\d\d ?\d\d\d\d ?\d\d\d)\b/ },
+        { name: 'FedEx', pattern: /(\b96\d{20}\b)|(\b\d{15}\b)|(\b\d{12}\b)/ },
+        { name: 'FedEx', pattern: /\b((98\d\d\d\d\d?\d\d\d\d|98\d\d) ?\d\d\d\d ?\d\d\d\d( ?\d\d\d)?)\b/ },
+        { name: 'FedEx', pattern: /^[0-9]{15}$/ },
+        { name: 'FedEx', pattern: /^\d{12}$/ },
+        { name: 'USPS', pattern: /(\b\d{30}\b)|(\b91\d+\b)|(\b\d{20}\b)/ },
+        { name: 'USPS', pattern: /^E\D{1}\d{9}\D{2}$|^9\d{15,21}$/ },
+        { name: 'USPS', pattern: /^91[0-9]+$/ },
+        { name: 'USPS', pattern: /^[A-Za-z]{2}[0-9]+US$/ },
+        { name: 'USPS', pattern: /^420\d{27}$/ } // New USPS pattern for '420' prefix
+    ];
+
+    for (const { name, pattern } of carrierPatterns) {
+        if (pattern.test(trackingId)) {
+            console.log(`Matched Pattern: ${pattern} for Carrier: ${name}`);
+            return name;
+        }
+    }
+
+    console.log(`No match found for: ${trackingId}`);
+    return "Unknown Carrier";
+}
 
   trackShipment() {
     if (!this.trackingId) {
@@ -222,36 +213,38 @@ export class TrackingPageComponent implements OnInit {
     this.isLoading = true;
   
     // Detect the carrier based on the tracking ID format
-    if (this.trackingId.startsWith('1Z')) {
+    if (this.getCarrierName(this.trackingId) === "UPS") {
       console.log('Tracking via UPS');
       this.showUps = true;
       this.showUsps = false;
       this.showFedex = false;
       this.getUpsShipment(this.createParams());
-    } else if (this.trackingId.startsWith('9')) {
+    } else if (this.getCarrierName(this.trackingId) === "FedEx") {
       console.log('Tracking via FedEx');
       this.showUps = false;
       this.showUsps = false;
       this.showFedex = true;
       this.getFedexShipment(this.createParams());
-    } else {
+    } else if (this.getCarrierName(this.trackingId) === "USPS") {
       console.log('Tracking via USPS');
       this.showUps = false;
       this.showUsps = true;
       this.showFedex = false;
       this.getUspsShipment(this.createParams());
+    } else{
+      console.log('Invalid Tracking Id');
     }
   }
   
   createParams() {
     return {
-      "tracking_number": this.trackingId,
-      "locale": 'en_US',
-      "return_signature": 'false',
-      "return_milestones": 'false',
-      "return_pod": 'false',
-      "transId": '12345',
-      "transactionSrc": 'testing',
+      tracking_number: this.trackingId,
+      locale: 'en_US',
+      return_signature: 'false',
+      return_milestones: 'false',
+      return_pod: 'false',
+      transId: '12345',
+      transactionSrc: 'testing',
     };
   }
   

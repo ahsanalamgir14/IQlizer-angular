@@ -1,0 +1,32 @@
+<div class="image-display-container">
+  <!-- Buttons to fetch images -->
+  <div class="button-group">
+    <button (click)="getGifBase64Label()">Fetch GIF Label</button>
+    <button (click)="getPngBase64Label()">Fetch PNG Label</button>
+    <button (click)="getJpgBase64Label()">Fetch JPG Label</button>
+  </div>
+
+  <!-- Container for GIF -->
+  <div id="gif-container" *ngIf="gifBase64">
+    <h3>GIF Image</h3>
+    <div class="image-wrapper">
+      <img [src]="'data:image/gif;base64,' + gifBase64" alt="GIF Label" class="rotatable" />
+    </div>
+  </div>
+
+  <!-- Container for PNG -->
+  <div id="png-container" *ngIf="pngBase64">
+    <h3>PNG Image</h3>
+    <div class="image-wrapper">
+      <img [src]="'data:image/png;base64,' + pngBase64" alt="PNG Label"  />
+    </div>
+  </div>
+
+  <!-- Container for JPG -->
+  <div id="jpg-container" *ngIf="base64Jpg">
+    <h3>JPG Image</h3>
+    <div class="image-wrapper">
+      <img [src]="'data:image/jpeg;base64,' + base64Jpg" alt="JPG Label"  />
+    </div>
+  </div>
+</div>

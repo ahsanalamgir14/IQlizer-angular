@@ -35,11 +35,7 @@
               "src/custom-theme.scss",
               "src/styles.scss"
             ],
-            "scripts": [
-              "node_modules/browserify-zlib/lib/index.js",
-              "node_modules/path-browserify/index.js",
-              "node_modules/stream-browserify/index.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {

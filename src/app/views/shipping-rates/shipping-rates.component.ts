@@ -13,7 +13,6 @@ import * as demoData from './rates-demo.json';
 export class ShippingRatesComponent implements OnInit {
 
   addressForm: FormGroup;
-  // rates: Rate[] = demoData;
   rates: Rate[] = [];
   upsRates: Rate[] = [];
   uspsRates: Rate[] = [];
@@ -21,9 +20,16 @@ export class ShippingRatesComponent implements OnInit {
   selectedUpsRateIndex: number | null = null;
   selectedUspsRateIndex: number | null = null;
   selectedFedexRateIndex: number | null = null;
-  displayedColumns: string[] = ['carrier', 'est_delivery_days', 'mode', 'rate'];
+  displayedColumns: string[] = ['select', 'carrier', 'est_delivery_days', 'mode', 'rate'];
+  rateSelectionForm: FormGroup;
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
+    this.rateSelectionForm = this.fb.group({
+      rates: this.fb.array(this.rates.map(rate => this.fb.group({
+        selected: [rate.selected]
+      })))
+    });
+
     this.addressForm = this.fb.group({
       // To Address
       toName: ['', Validators.required],
@@ -55,6 +61,31 @@ export class ShippingRatesComponent implements OnInit {
 
   ngOnInit(): void {
     this.onSubmit();
+  }
+
+  isAllSelected(): boolean {
+    return this.rates.every(rate => rate.selected);
+  }
+
+  isSomeSelected(): boolean {
+    return this.rates.some(rate => rate.selected) && !this.isAllSelected();
+  }
+
+  toggleSelectAll(isChecked: boolean): void {
+    this.rates.forEach(rate => (rate.selected = isChecked));
+  } 
+
+  onRateSelectionSubmit() {
+    // Get the selected rates from the form and log them
+    const selectedRates = this.rateSelectionForm.value.rates.filter((rate: any) => rate.selected);
+    console.log('Selected Rates:', selectedRates);
+  }
+  
+  onRateChecked(rate: Rate) {
+    console.log('Selected Rates:');
+    rate.selected = !rate.selected;
+
+    console.log('Selected Rates:', rate.selected?"Selected":"Unselected");
   }
 
   async getUpsRates(requestData: any): Promise<void> {
@@ -147,37 +178,6 @@ export class ShippingRatesComponent implements OnInit {
       },
     };
 
-    // const requestData = {
-    //   "to_address": {
-    //     "name": "Dr. Steve Brule",
-    //     "street1": "179 N Harbor Dr",
-    //     "city": "Redondo Beach",
-    //     "state": "CA",
-    //     "zip": "90277",
-    //     "country": "US",
-    //     "phone": "8573875756",
-    //     "email": "dr_steve_brule@gmail.com"
-    //   },
-    //   "from_address": {
-    //     "name": "EasyPost",
-    //     "street1": "417 Montgomery Street",
-    //     "street2": "5th Floor",
-    //     "city": "San Francisco",
-    //     "state": "CA",
-    //     "zip": "94104",
-    //     "country": "US",
-    //     "phone": "4153334445",
-    //     "email": "support@easypost.com"
-    //   },
-    //   "parcel": {
-    //     "length": "20.2",
-    //     "width": "10.9",
-    //     "height": "5",
-    //     "weight": "65.0"
-    //   }
-    // }
-
-    // Make the HTTP POST request
     try {
       await this.getRates(requestData);
       this.rates = [...this.upsRates, ...this.uspsRates, ...this.fedexRates];

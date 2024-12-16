@@ -187,10 +187,20 @@
             </form>
         </div>
 
-        <!-- table -->
-        <div class="container table-responsive mt-4" *ngIf="rates.length > 0">
+      
+       <!-- table -->
+       <div class="container table-responsive mt-4" *ngIf="rates.length > 0">
+        <form [formGroup]="rateSelectionForm" (ngSubmit)="onRateSelectionSubmit()">
             <table mat-table [dataSource]="rates" class="mat-elevation-z8" matSort>
-
+                
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Select </th>
+                    <td mat-cell *matCellDef="let rate">
+                        <input type="checkbox"  [checked]="rate.selected" (change)="onRateChecked(rate)">
+                    </td>
+                </ng-container>
+                
                 <!-- Carrier Column -->
                 <ng-container matColumnDef="carrier">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Courier </th>
@@ -201,44 +211,53 @@
                                     class="image-fluid full-size" [ngClass]="{
                                         'image-ups-usps': rate.carrier === 'UPS' || rate.carrier === 'USPS',
                                         'image-fedex': rate.carrier === 'FedEx'
-                                      }" />
+                                    }" />
                             </div>
                             <div class="col-4">
                                 <div class="d-block">
-                                    <span>
-                                        {{ rate.carrier }}
-                                    </span>
+                                    <span>{{ rate.carrier }}</span>
                                     <mat-chip>One fish</mat-chip>
                                 </div>
                             </div>
                         </div>
                     </td>
                 </ng-container>
-
+    
                 <!-- Delivery Days Column -->
                 <ng-container matColumnDef="est_delivery_days">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Delivery Days </th>
-                    <td mat-cell *matCellDef="let rate"> {{ rate.est_delivery_days }} Working Days</td>
+                    <td mat-cell *matCellDef="let rate"> {{ rate.est_delivery_days }} Working Days </td>
                 </ng-container>
-
-                <!-- Estimated Delivery Days Column -->
+    
+                <!-- Mode Column -->
                 <ng-container matColumnDef="mode">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Tracking </th>
                     <td mat-cell *matCellDef="let rate"> {{ rate.mode }} </td>
                 </ng-container>
-
+    
                 <!-- Rate Column -->
                 <ng-container matColumnDef="rate">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cost </th>
-                    <td mat-cell *matCellDef="let rate" style="font-weight: bold;"> {{ rate.rate | currency:
-                        rate.currency }} </td>
+                    <td mat-cell *matCellDef="let rate" style="font-weight: bold;"> {{ rate.rate | currency: rate.currency }} </td>
                 </ng-container>
-
+    
                 <!-- Header and Row Definitions -->
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-        </div>
+    
+            <!-- Submit Button -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <button type="submit" mat-raised-button color="primary">
+                        Submit Selected Rates
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+
 
     </mat-card>
 </div>
