@@ -16,9 +16,28 @@
     </div>
 </div> -->
 
-<div>
+<!-- <div>
     <button (click)="convertZplToImage()">Convert ZPL to Image</button>
     <div *ngIf="imageUrl">
         <img [src]="imageUrl" alt="Converted Label" />
     </div>
+</div> -->
+
+<!-- <div class="image-container">
+    <img *ngIf="imageUrl" [src]="imageUrl" alt="Rendered Label" />
+    <p *ngIf="!imageUrl">No image to display</p>
 </div>
+<button (click)="convertZplToImage()">Render ZPL</button> -->
+
+<div>
+    <textarea [(ngModel)]="zplCode" rows="10" cols="50" placeholder="Enter ZPL Code"></textarea>
+    <button (click)="convertZplToImage()">Convert to Image</button>
+    <canvas #canvas style="border: 1px solid black;"></canvas>
+  </div>
+
+  <!-- <div>
+    <input type="file" (change)="onFileSelected($event)" />
+    <button (click)="convertZplToPng()">Convert to PNG</button>
+    <canvas #canvas style="border: 1px solid black;"></canvas>
+    <a #downloadLink style="display: none;">Download PNG</a>
+  </div> -->
