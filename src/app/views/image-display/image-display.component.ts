@@ -24,15 +24,6 @@ export class ImageDisplayComponent implements OnInit {
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private dataService: DataService) { }
 
-  // ngOnInit(): void {
-  //   this.route.queryParams.subscribe((params: any) => {
-  //     if (params['rates']) {
-  //       this.selectedRates = JSON.parse(params['rates']);
-  //     }
-  //     console.log('Received Selected Rates:', this.selectedRates);
-  //   });
-  // }
-
   ngOnInit(): void {
     this.selectedRates = this.dataService.getSelectedRates();
     this.addressForm = this.dataService.getSelectedAddressForm();
