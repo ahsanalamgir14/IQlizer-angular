@@ -62,3 +62,8 @@
   overflow: auto;
   background-color: lightgray;
 }
+
+
+.no-hover:hover, .no-hover:active {
+  background: none !important;
+}

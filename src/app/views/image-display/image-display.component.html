@@ -1,32 +1,64 @@
-<div class="image-display-container">
-  <!-- Buttons to fetch images -->
-  <div class="button-group">
-    <button (click)="getGifBase64Label()">Fetch GIF Label</button>
-    <button (click)="getPngBase64Label()">Fetch PNG Label</button>
-    <button (click)="getJpgBase64Label()">Fetch JPG Label</button>
-  </div>
+<div class="p-4 mb-4">
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3>Label Display</h3>
+        </div>
+      </div>
+    </mat-card-content>
 
-  <!-- Container for GIF -->
-  <div id="gif-container" *ngIf="gifBase64">
-    <h3>GIF Image</h3>
-    <div class="image-wrapper">
-      <img [src]="'data:image/gif;base64,' + gifBase64" alt="GIF Label" class="rotatable" />
-    </div>
-  </div>
+    <!-- <div class="button-group d-flex justify-content-center align-items-center w-100 mb-4">
+      <button mat-raised-button color="primary" (click)="getGifBase64LabelUps()">Ups Label</button>
+      <button mat-raised-button color="primary" (click)="getPngBase64LabelFedEx()">FedEx Label</button>
+      <button mat-raised-button color="primary" (click)="getJpgBase64LabelUsps()">Usps Label</button>
+    </div> -->
 
-  <!-- Container for PNG -->
-  <div id="png-container" *ngIf="pngBase64">
-    <h3>PNG Image</h3>
-    <div class="image-wrapper">
-      <img [src]="'data:image/png;base64,' + pngBase64" alt="PNG Label"  />
+    <div class="d-flex justify-content-center align-items-center w-100 mb-4" *ngIf="selectedRates.length === 0">
+      <p>No data passed, please select data from shipping rates to generate label</p>
     </div>
-  </div>
 
-  <!-- Container for JPG -->
-  <div id="jpg-container" *ngIf="base64Jpg">
-    <h3>JPG Image</h3>
-    <div class="image-wrapper">
-      <img [src]="'data:image/jpeg;base64,' + base64Jpg" alt="JPG Label"  />
+    <div class="image-display-container">
+      <!-- Buttons to fetch images -->
+      <div class="d-flex justify-content-center align-items-center w-100" *ngIf="isLoading; else showData">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <ng-template #showData>
+        <!-- Container for GIF -->
+        <div id="gif-container" *ngIf="gifBase64" class="image-wrapper">
+          <img [src]="'data:image/gif;base64,' + gifBase64" alt="GIF Label" class="rotatable" />
+        </div>
+
+        <!-- Container for PNG -->
+        <div id="png-container" *ngIf="pngBase64" class="image-wrapper">
+          <img [src]="'data:image/png;base64,' + pngBase64" alt="PNG Label" />
+        </div>
+
+        <!-- Container for JPG -->
+        <div id="jpg-container" *ngIf="base64Jpg" class="image-wrapper">
+          <img [src]="'data:image/jpeg;base64,' + base64Jpg" alt="JPG Label" />
+        </div>
+      </ng-template>
+
     </div>
-  </div>
+    <div class="container" *ngIf="gifBase64">
+      <div class="button-group d-flex justify-content-center align-items-center w-100 mb-4">
+        <button mat-raised-button color="primary" (click)="printUps()">Print</button>
+        <button mat-raised-button color="primary" (click)="saveUps()">Save</button>
+      </div>
+    </div>
+    <div class="container" *ngIf="pngBase64">
+      <div class="button-group d-flex justify-content-center align-items-center w-100 mb-4">
+        <button mat-raised-button color="primary" (click)="printFedEx()">Print</button>
+        <button mat-raised-button color="primary" (click)="saveFedEx()">Save</button>
+      </div>
+    </div>
+    <div class="container" *ngIf="base64Jpg">
+      <div class="button-group d-flex justify-content-center align-items-center w-100 mb-4">
+        <button mat-raised-button color="primary" (click)="printUsps()">Print</button>
+        <button mat-raised-button color="primary" (click)="saveUsps()">Save</button>
+      </div>
+    </div>
+  </mat-card>
 </div>

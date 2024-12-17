@@ -15,7 +15,7 @@ export class TrackingPageComponent implements OnInit {
   showUps: boolean = false;
   showUsps: boolean = false;
   showFedex: boolean = false;
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   trackingId: string = '';
   upsEvents: any[] = [];
   uspsEvents: any[] = [];

@@ -1,69 +1,110 @@
 import { Label } from './../../models/label.model';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { DataService } from './data.service';
+import { AddressFormModel } from 'src/app/models/address-form.model';
 
 @Component({
   selector: 'app-image-display',
   templateUrl: './image-display.component.html',
   styleUrls: ['./image-display.component.css']
 })
-export class ImageDisplayComponent {
+export class ImageDisplayComponent implements OnInit {
   label: Label[] = [];
   USPSLabel: Label[] = [];
   fedexLabel: Label[] = [];
   gifBase64: string = '';
   pngBase64: string = '';
   base64Jpg: string = '';
+  selectedRates: any[] = [];
+  addressForm: AddressFormModel;
+  isLoading: boolean = true;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private dataService: DataService) { }
 
-  async getGifBase64Label(): Promise<void> {
+  // ngOnInit(): void {
+  //   this.route.queryParams.subscribe((params: any) => {
+  //     if (params['rates']) {
+  //       this.selectedRates = JSON.parse(params['rates']);
+  //     }
+  //     console.log('Received Selected Rates:', this.selectedRates);
+  //   });
+  // }
+
+  ngOnInit(): void {
+    this.selectedRates = this.dataService.getSelectedRates();
+    this.addressForm = this.dataService.getSelectedAddressForm();
+    console.log('Received Selected Rates:', this.selectedRates);
+    console.log('Received addressForm:', this.addressForm);
+
+    if(this.selectedRates.length > 0) {
+      if(this.selectedRates[0].carrier === 'UPS') {
+        console.log('calling UPS: label ');
+        this.getGifBase64LabelUps();
+      } else if (this.selectedRates[0].carrier === 'USPS') {
+        console.log('calling USPS: label ');
+        this.getJpgBase64LabelUsps();
+      } else if (this.selectedRates[0].carrier === 'FedEx') {
+        console.log('calling FedEx: label ');
+        this.getPngBase64LabelFedEx();
+      } else {
+        console.log('No Data found')
+        this.isLoading = false;
+      }
+    } else {
+      this.isLoading = false;
+    }
+  }
+
+  async getGifBase64LabelUps(): Promise<void> {
+    this.isLoading = true;
     const requestData = {
       trans_id: "your_transaction_id",
       transaction_src: "testing",
       shipper: {
-        Name: "ShipperName",
+        Name: this.addressForm.fromName,
         AttentionName: "ShipperZs Attn Name",
         TaxIdentificationNumber: "123456",
         Phone: {
-          Number: "1115554758",
+          Number: this.addressForm.fromPhone,
           Extension: " "
         },
         ShipperNumber: "K61C80",
         FaxNumber: "8002222222",
         Address: {
-          AddressLine: ["2311 York Rd"],
-          City: "Timonium",
-          StateProvinceCode: "MD",
-          PostalCode: "21093",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.fromStreet1],
+          City: this.addressForm.fromCity,
+          StateProvinceCode: this.addressForm.fromState,
+          PostalCode: this.addressForm.fromZip,
+          CountryCode: this.addressForm.fromCountry
         }
       },
       ship_to: {
-        Name: "Happy Dog Pet Supply",
+        Name: this.addressForm.toName,
         AttentionName: "1160b_74",
-        Phone: { Number: "9225377171" },
+        Phone: { Number: this.addressForm.toPhone },
         Address: {
-          AddressLine: ["123 Main St"],
-          City: "timonium",
-          StateProvinceCode: "MD",
-          PostalCode: "21030",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.toStreet1],
+          City: this.addressForm.toCity,
+          StateProvinceCode: this.addressForm.toState,
+          PostalCode: this.addressForm.toZip,
+          CountryCode: this.addressForm.toCountry
         },
         Residential: " "
       },
       ship_from: {
-        Name: "T and T Designs",
+        Name: this.addressForm.fromName,
         AttentionName: "1160b_74",
-        Phone: { Number: "1234567890" },
+        Phone: { Number: this.addressForm.fromPhone },
         FaxNumber: "1234567890",
         Address: {
-          AddressLine: ["2311 York Rd"],
-          City: "Alpharetta",
-          StateProvinceCode: "GA",
-          PostalCode: "30005",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.fromStreet1],
+          City: this.addressForm.fromCity,
+          StateProvinceCode: this.addressForm.fromState,
+          PostalCode: this.addressForm.fromZip,
+          CountryCode: this.addressForm.fromCountry
         }
       },
       package: {
@@ -71,13 +112,13 @@ export class ImageDisplayComponent {
         Packaging: { Code: "02", Description: "Nails" },
         Dimensions: {
           UnitOfMeasurement: { Code: "IN", Description: "Inches" },
-          Length: "10",
-          Width: "30",
-          Height: "45"
+          Length: this.addressForm.parcelLength,
+          Width: this.addressForm.parcelWidth,
+          Height: this.addressForm.parcelHeight
         },
         PackageWeight: {
           UnitOfMeasurement: { Code: "LBS", Description: "Pounds" },
-          Weight: "5"
+          Weight: this.addressForm.parcelWeight
         }
       },
       label_specification: {
@@ -91,7 +132,7 @@ export class ImageDisplayComponent {
 
     try {
       const response: any = await this.http.post(
-        'https://8xhibt3xrf.execute-api.us-east-2.amazonaws.com/dev/label',
+        `${environment.host}/dev/label`,
         requestData,
         {
           headers: {
@@ -106,49 +147,51 @@ export class ImageDisplayComponent {
       console.error('Error fetching GIF label:', error);
       alert('An error occurred while fetching the GIF label.');
     }
+    this.isLoading = false;
   }
 
-  async getPngBase64Label(): Promise<void> {
+  async getPngBase64LabelFedEx(): Promise<void> {
+    this.isLoading = true;
     const requestData = {
       trans_id: "your_transaction_id",
       transaction_src: "testing",
       shipper: {
-        Name: "ShipperName",
+        Name: this.addressForm.fromName,
         TaxIdentificationNumber: "123456",
         Phone: {
-          Number: "1115554758",
+          Number: this.addressForm.fromPhone,
           Extension: " "
         },
         FaxNumber: "8002222222",
         Address: {
-          AddressLine: ["2311 York Rd"],
-          City: "Timonium",
-          StateProvinceCode: "MD",
-          PostalCode: "21093",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.fromStreet1],
+          City: this.addressForm.fromCity,
+          StateProvinceCode: this.addressForm.fromState,
+          PostalCode: this.addressForm.fromZip,
+          CountryCode: this.addressForm.fromCountry
         }
       },
       ship_to: {
-        Name: "Happy Dog Pet Supply",
-        Phone: { Number: "9225377171" },
+        Name: this.addressForm.toName,
+        Phone: { Number: this.addressForm.toPhone },
         Address: {
-          AddressLine: ["123 Main St"],
-          City: "timonium",
-          StateProvinceCode: "MD",
-          PostalCode: "21030",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.toStreet1],
+          City: this.addressForm.toCity,
+          StateProvinceCode: this.addressForm.toState,
+          PostalCode: this.addressForm.toZip,
+          CountryCode: this.addressForm.toCountry
         },
         Residential: " "
       },
       ship_from: {
-        Name: "T and T Designs",
-        Phone: { Number: "1234567890" },
+        Name: this.addressForm.fromName,
+        Phone: { Number: this.addressForm.fromPhone },
         Address: {
-          AddressLine: ["2311 York Rd"],
-          City: "Alpharetta",
-          StateProvinceCode: "GA",
-          PostalCode: "30005",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.fromStreet1],
+          City: this.addressForm.fromCity,
+          StateProvinceCode: this.addressForm.fromState,
+          PostalCode: this.addressForm.fromZip,
+          CountryCode: this.addressForm.fromCountry
         }
       },
       package: {
@@ -156,13 +199,13 @@ export class ImageDisplayComponent {
         Packaging: { Code: "02", Description: "Nails" },
         Dimensions: {
           UnitOfMeasurement: { Code: "IN", Description: "Inches" },
-          Length: "10",
-          Width: "30",
-          Height: "45"
+          Length: this.addressForm.parcelLength,
+          Width: this.addressForm.parcelWidth,
+          Height: this.addressForm.parcelHeight
         },
         PackageWeight: {
           UnitOfMeasurement: { Code: "LBS", Description: "Pounds" },
-          Weight: "5"
+          Weight: this.addressForm.parcelWeight
         }
       },
       label_specification: {
@@ -173,7 +216,7 @@ export class ImageDisplayComponent {
 
     try {
       const response: any = await this.http.post(
-        'https://8xhibt3xrf.execute-api.us-east-2.amazonaws.com/dev/labelfedex',
+        `${environment.host}/dev/labelfedex`,
         requestData,
         {
           headers: {
@@ -188,54 +231,56 @@ export class ImageDisplayComponent {
       console.error('Error fetching PNG label:', error);
       alert('An error occurred while fetching the PNG label.');
     }
+    this.isLoading = false;
   }
 
-  async getJpgBase64Label(): Promise<void> {
+  async getJpgBase64LabelUsps(): Promise<void> {
+    this.isLoading = true;
     const requestData = {
       trans_id: "your_transaction_id",
       transaction_src: "testing",
       shipper: {
-        Name: "ShipperName",
+        Name: this.addressForm.fromName,
         AttentionName: "ShipperZs Attn Name",
         TaxIdentificationNumber: "123456",
         Phone: {
-          Number: "1115554758",
+          Number: this.addressForm.fromPhone,
           Extension: " "
         },
         ShipperNumber: "K61C80",
         FaxNumber: "8002222222",
         Address: {
-          AddressLine: ["2311 York Rd"],
-          City: "Timonium",
-          StateProvinceCode: "MD",
-          PostalCode: "21093",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.fromStreet1],
+          City: this.addressForm.fromCity,
+          StateProvinceCode: this.addressForm.fromState,
+          PostalCode: this.addressForm.fromZip,
+          CountryCode: this.addressForm.fromCountry
         }
       },
       ship_to: {
-        Name: "Happy Dog Pet Supply",
+        Name: this.addressForm.toName,
         AttentionName: "1160b_74",
-        Phone: { Number: "9225377171" },
+        Phone: { Number: this.addressForm.toPhone },
         Address: {
-          AddressLine: ["2311 York Rd"],
-          City: "St. Louis",
-          StateProvinceCode: "MD",
-          PostalCode: "63104",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.toStreet1],
+          City: this.addressForm.toCity,
+          StateProvinceCode: this.addressForm.toState,
+          PostalCode: this.addressForm.toZip,
+          CountryCode: this.addressForm.toCountry
         },
         Residential: " "
       },
       ship_from: {
-        Name: "T and T Designs",
+        Name: this.addressForm.fromName,
         AttentionName: "1160b_74",
-        Phone: { Number: "1234567890" },
+        Phone: { Number: this.addressForm.fromPhone },
         FaxNumber: "1234567890",
         Address: {
-          AddressLine: ["2150 Kinsley Lane"],
-          City: "Tallahassee",
-          StateProvinceCode: "FL",
-          PostalCode: "32308",
-          CountryCode: "US"
+          AddressLine: [this.addressForm.fromStreet1],
+          City: this.addressForm.fromCity,
+          StateProvinceCode: this.addressForm.fromState,
+          PostalCode: this.addressForm.fromZip,
+          CountryCode: this.addressForm.fromCountry
         }
       },
       package: {
@@ -243,13 +288,13 @@ export class ImageDisplayComponent {
         Packaging: { Code: "02", Description: "Nails" },
         Dimensions: {
           UnitOfMeasurement: { Code: "IN", Description: "Inches" },
-          Length: "10",
-          Width: "30",
-          Height: "45"
+          Length: this.addressForm.parcelLength,
+          Width: this.addressForm.parcelWidth,
+          Height: this.addressForm.parcelHeight
         },
         PackageWeight: {
           UnitOfMeasurement: { Code: "LBS", Description: "Pounds" },
-          Weight: "5"
+          Weight: this.addressForm.parcelWeight
         }
       },
       label_specification: {
@@ -261,7 +306,7 @@ export class ImageDisplayComponent {
 
     try {
       const response: any = await this.http.post(
-        'https://8xhibt3xrf.execute-api.us-east-2.amazonaws.com/dev/labelusps',
+        `${environment.host}/dev/labelusps`,
         requestData,
         {
           headers: {
@@ -275,6 +320,83 @@ export class ImageDisplayComponent {
     } catch (error) {
       console.error('Error fetching JPG label:', error);
       alert('An error occurred while fetching the JPG label.');
+    }
+    this.isLoading = false;
+  }
+
+  printUps() {
+    if (this.gifBase64) {
+      // Create an image element to hold the label
+      const printWindow = window.open('', '', 'height=500,width=800');
+      const imgElement = `<img src="data:image/gif;base64,${this.gifBase64}" alt="UPS Label" />`;
+      if(printWindow) {
+        printWindow.document.write(imgElement);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    } else {
+      alert('No label available for printing.');
+    }
+  }
+
+  saveUps() {
+    if (this.gifBase64) {
+      const link = document.createElement('a');
+      link.href = `data:image/gif;base64,${this.gifBase64}`;
+      link.download = 'UPS_Label.gif';  // You can change the file name as needed
+      link.click();
+    } else {
+      alert('No label available to save.');
+    }
+  }
+  printFedEx() {
+    if (this.pngBase64) {
+      // Create an image element to hold the label
+      const printWindow = window.open('', '', 'height=500,width=800');
+      const imgElement = `<img src="data:image/png;base64,${this.pngBase64}" alt="Fedex Label" />`;
+      if(printWindow) {
+        printWindow.document.write(imgElement);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    } else {
+      alert('No label available for printing.');
+    }
+  }
+
+  saveFedEx() {
+    if (this.pngBase64) {
+      const link = document.createElement('a');
+      link.href = `data:image/png;base64,${this.pngBase64}`;
+      link.download = 'UPS_Label.png';
+      link.click();
+    } else {
+      alert('No label available to save.');
+    }
+  }
+  printUsps() {
+    if (this.base64Jpg) {
+      // Create an image element to hold the label
+      const printWindow = window.open('', '', 'height=500,width=800');
+      const imgElement = `<img src="data:image/jpg;base64,${this.base64Jpg}" alt="USPS Label" />`;
+      if(printWindow) {
+        printWindow.document.write(imgElement);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    } else {
+      alert('No label available for printing.');
+    }
+  }
+
+  saveUsps() {
+    if (this.base64Jpg) {
+      const link = document.createElement('a');
+      link.href = `data:image/jpg;base64,${this.base64Jpg}`;
+      link.download = 'UPS_Label.jpg';
+      link.click();
+    } else {
+      alert('No label available to save.');
     }
   }
 }
