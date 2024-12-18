@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
-import * as demoData from './rates-demo.json';
 import { Router } from '@angular/router';
 import { DataService } from '../image-display/data.service';
 
@@ -62,33 +61,33 @@ export class ShippingRatesComponent implements OnInit {
     });
 
     // UPS data
-    this.addressForm.setValue({
-      // To Address
-      toName: 'Dr. Steve Brule',
-      toStreet1: '179 N Harbor Dr',
-      toCity: 'Redondo Beach',
-      toState: 'CA',
-      toZip: '90277',
-      toCountry: 'US',
-      toPhone: '8573875756',
-      toEmail: 'dr_steve_brule@gmail.com',
+    // this.addressForm.setValue({
+    //   // To Address
+    //   toName: 'Dr. Steve Brule',
+    //   toStreet1: '179 N Harbor Dr',
+    //   toCity: 'Redondo Beach',
+    //   toState: 'CA',
+    //   toZip: '90277',
+    //   toCountry: 'US',
+    //   toPhone: '8573875756',
+    //   toEmail: 'dr_steve_brule@gmail.com',
 
-      // From Address
-      fromName: 'EasyPost',
-      fromStreet1: '417 Montgomery Street',
-      fromCity: 'San Francisco',
-      fromState: 'CA',
-      fromZip: '94104',
-      fromCountry: 'US',
-      fromPhone: '4153334445',
-      fromEmail: 'support@easypost.com',
+    //   // From Address
+    //   fromName: 'EasyPost',
+    //   fromStreet1: '417 Montgomery Street',
+    //   fromCity: 'San Francisco',
+    //   fromState: 'CA',
+    //   fromZip: '94104',
+    //   fromCountry: 'US',
+    //   fromPhone: '4153334445',
+    //   fromEmail: 'support@easypost.com',
 
-      // Parcel Info
-      parcelLength: '20.2',
-      parcelWidth: '10.9',
-      parcelHeight: '5',
-      parcelWeight: '65.0',
-    });
+    //   // Parcel Info
+    //   parcelLength: '20.2',
+    //   parcelWidth: '10.9',
+    //   parcelHeight: '5',
+    //   parcelWeight: '65.0',
+    // });
 
     // Fedex
     // this.addressForm.setValue({
@@ -120,33 +119,33 @@ export class ShippingRatesComponent implements OnInit {
     // });
 
     // USPS
-    // this.addressForm.setValue({
-    //   // To Address
-    //   toName: 'Dr. Steve Brule',
-    //   toStreet1: '2311 York Rd',
-    //   toCity: 'Timonium',
-    //   toState: 'MD',
-    //   toZip: '21093',
-    //   toCountry: 'US',
-    //   toPhone: '8573875756',
-    //   toEmail: 'dr_steve_brule@gmail.com',
+    this.addressForm.setValue({
+      // To Address
+      toName: 'Dr. Steve Brule',
+      toStreet1: '2311 York Rd',
+      toCity: 'Timonium',
+      toState: 'MD',
+      toZip: '21093',
+      toCountry: 'US',
+      toPhone: '8573875756',
+      toEmail: 'dr_steve_brule@gmail.com',
 
-    //   // From Address
-    //   fromName: 'EasyPost',
-    //   fromStreet1: '2150 Kinsley Lane',
-    //   fromCity: 'Tallahassee',
-    //   fromState: 'FL',
-    //   fromZip: '32308',
-    //   fromCountry: 'US',
-    //   fromPhone: '4153334445',
-    //   fromEmail: 'support@easypost.com',
+      // From Address
+      fromName: 'EasyPost',
+      fromStreet1: '2150 Kinsley Lane',
+      fromCity: 'Tallahassee',
+      fromState: 'FL',
+      fromZip: '32308',
+      fromCountry: 'US',
+      fromPhone: '4153334445',
+      fromEmail: 'support@easypost.com',
 
-    //   // Parcel Info
-    //   parcelLength: '20.2',
-    //   parcelWidth: '10.9',
-    //   parcelHeight: '5',
-    //   parcelWeight: '65.0',
-    // });
+      // Parcel Info
+      parcelLength: '20.2',
+      parcelWidth: '10.9',
+      parcelHeight: '5',
+      parcelWeight: '65.0',
+    });
 
   }
 

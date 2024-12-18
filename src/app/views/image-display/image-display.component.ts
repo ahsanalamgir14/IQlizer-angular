@@ -12,7 +12,7 @@ import { AddressFormModel } from 'src/app/models/address-form.model';
   styleUrls: ['./image-display.component.css']
 })
 export class ImageDisplayComponent implements OnInit {
-  label: Label[] = [];
+  labels: { carrier: string, base64: string, imageFormat: string }[] = [];
   USPSLabel: Label[] = [];
   fedexLabel: Label[] = [];
   gifBase64: string = '';
@@ -27,31 +27,49 @@ export class ImageDisplayComponent implements OnInit {
   ngOnInit(): void {
     this.selectedRates = this.dataService.getSelectedRates();
     this.addressForm = this.dataService.getSelectedAddressForm();
-    console.log('Received Selected Rates:', this.selectedRates);
-    console.log('Received addressForm:', this.addressForm);
 
-    if(this.selectedRates.length > 0) {
-      if(this.selectedRates[0].carrier === 'UPS') {
-        console.log('calling UPS: label ');
-        this.getGifBase64LabelUps();
-      } else if (this.selectedRates[0].carrier === 'USPS') {
-        console.log('calling USPS: label ');
-        this.getJpgBase64LabelUsps();
-      } else if (this.selectedRates[0].carrier === 'FedEx') {
-        console.log('calling FedEx: label ');
-        this.getPngBase64LabelFedEx();
-      } else {
-        console.log('No Data found')
-        this.isLoading = false;
-      }
+    console.log('selectedRates.length: ', this.selectedRates.length);
+    if (this.selectedRates.length > 0) {
+      this.isLoading = true;
+
+      const fetchPromises = this.selectedRates.map(rate => {
+        switch (rate.carrier) {
+          case 'UPS':
+            return this.fetchLabel('UPS', 'label', 'GIF', rate, this.addressForm);
+          case 'FedEx':
+            return this.fetchLabel('FedEx', 'labelfedex', 'PNG', rate, this.addressForm);
+          case 'USPS':
+            return this.fetchLabel('USPS', 'labelusps', 'JPG', rate, this.addressForm);
+          default:
+            console.error(`Unknown carrier: ${rate.carrier}`);
+            return Promise.resolve();
+        }
+      });
+
+      // Wait for all fetchLabel calls to complete
+      Promise.all(fetchPromises).finally(() => this.isLoading = false);
     } else {
+      console.log('No data ', this.selectedRates);
       this.isLoading = false;
     }
   }
 
-  async getGifBase64LabelUps(): Promise<void> {
-    this.isLoading = true;
-    const requestData = {
+  getRequestData(rate: any) {
+    switch (rate.carrier) {
+      case 'UPS':
+        return this.requestDataUps();
+      case 'FedEx':
+        return this.requestDataFedEx();
+      case 'USPS':
+        return this.requestDataUsps();
+      default:
+        console.error(`Unknown carrier: ${rate.carrier}`);
+        return false;
+    }
+  }
+
+  requestDataUps() {
+    return {
       trans_id: "your_transaction_id",
       transaction_src: "testing",
       shipper: {
@@ -120,30 +138,9 @@ export class ImageDisplayComponent implements OnInit {
         HTTPUserAgent: "Mozilla/4.5"
       }
     };
-
-    try {
-      const response: any = await this.http.post(
-        `${environment.host}/dev/label`,
-        requestData,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      ).toPromise();
-
-      this.gifBase64 = response?.body?.base64Image || '';
-      console.log('GIF Base64 value:', this.gifBase64);
-    } catch (error) {
-      console.error('Error fetching GIF label:', error);
-      alert('An error occurred while fetching the GIF label.');
-    }
-    this.isLoading = false;
   }
-
-  async getPngBase64LabelFedEx(): Promise<void> {
-    this.isLoading = true;
-    const requestData = {
+  requestDataFedEx() {
+    return {
       trans_id: "your_transaction_id",
       transaction_src: "testing",
       shipper: {
@@ -204,30 +201,9 @@ export class ImageDisplayComponent implements OnInit {
         labelStockType: "PAPER_4X6"
       }
     };
-
-    try {
-      const response: any = await this.http.post(
-        `${environment.host}/dev/labelfedex`,
-        requestData,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      ).toPromise();
-
-      this.pngBase64 = response?.body?.base64Image || '';
-      console.log('PNG Base64 value:', this.pngBase64);
-    } catch (error) {
-      console.error('Error fetching PNG label:', error);
-      alert('An error occurred while fetching the PNG label.');
-    }
-    this.isLoading = false;
   }
-
-  async getJpgBase64LabelUsps(): Promise<void> {
-    this.isLoading = true;
-    const requestData = {
+  requestDataUsps() {
+    return {
       trans_id: "your_transaction_id",
       transaction_src: "testing",
       shipper: {
@@ -294,100 +270,176 @@ export class ImageDisplayComponent implements OnInit {
         receiptOption: "NONE"
       }
     };
+  }
+
+  async fetchLabel(carrier: string, endpoint: string, imageFormat: string, rate: any, addressForm: AddressFormModel): Promise<void> {
+    // const requestData = {
+    //   trans_id: "your_transaction_id",
+    //   transaction_src: "testing",
+    //   shipper: {
+    //     Name: this.addressForm.fromName,
+    //     AttentionName: "ShipperZs Attn Name",
+    //     TaxIdentificationNumber: "123456",
+    //     Phone: {
+    //       Number: this.addressForm.fromPhone,
+    //       Extension: " "
+    //     },
+    //     ShipperNumber: "K61C80",
+    //     FaxNumber: "8002222222",
+    //     Address: {
+    //       AddressLine: [this.addressForm.fromStreet1],
+    //       City: this.addressForm.fromCity,
+    //       StateProvinceCode: this.addressForm.fromState,
+    //       PostalCode: this.addressForm.fromZip,
+    //       CountryCode: this.addressForm.fromCountry
+    //     }
+    //   },
+    //   ship_to: {
+    //     Name: this.addressForm.toName,
+    //     AttentionName: "1160b_74",
+    //     Phone: { Number: this.addressForm.toPhone },
+    //     Address: {
+    //       AddressLine: [this.addressForm.toStreet1],
+    //       City: this.addressForm.toCity,
+    //       StateProvinceCode: this.addressForm.toState,
+    //       PostalCode: this.addressForm.toZip,
+    //       CountryCode: this.addressForm.toCountry
+    //     },
+    //     Residential: " "
+    //   },
+    //   ship_from: {
+    //     Name: this.addressForm.fromName,
+    //     AttentionName: "1160b_74",
+    //     Phone: { Number: this.addressForm.fromPhone },
+    //     FaxNumber: "1234567890",
+    //     Address: {
+    //       AddressLine: [this.addressForm.fromStreet1],
+    //       City: this.addressForm.fromCity,
+    //       StateProvinceCode: this.addressForm.fromState,
+    //       PostalCode: this.addressForm.fromZip,
+    //       CountryCode: this.addressForm.fromCountry
+    //     }
+    //   },
+    //   package: {
+    //     Description: " ",
+    //     Packaging: { Code: "02", Description: "Nails" },
+    //     Dimensions: {
+    //       UnitOfMeasurement: { Code: "IN", Description: "Inches" },
+    //       Length: this.addressForm.parcelLength,
+    //       Width: this.addressForm.parcelWidth,
+    //       Height: this.addressForm.parcelHeight
+    //     },
+    //     PackageWeight: {
+    //       UnitOfMeasurement: { Code: "LBS", Description: "Pounds" },
+    //       Weight: this.addressForm.parcelWeight
+    //     }
+    //   },
+    //   label_specification: {
+    //     LabelImageFormat: {
+    //       Code: imageFormat,
+    //       Description: imageFormat
+    //     },
+    //     HTTPUserAgent: "Mozilla/4.5"
+    //   }
+    // };
+
+    const requestData = this.getRequestData(rate);
 
     try {
-      const response: any = await this.http.post(
-        `${environment.host}/dev/labelusps`,
-        requestData,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      ).toPromise();
+      const response: any = await this.http.post(`${environment.host}/dev/${endpoint}`, requestData).toPromise();
+      const base64Image = response?.body?.base64Image || '';
 
-      this.base64Jpg = response?.body?.base64Image || '';
-      console.log('JPG Base64 value:', this.base64Jpg);
+      if (base64Image) {
+        this.labels.push({ carrier, base64: base64Image, imageFormat });
+      }
     } catch (error) {
-      console.error('Error fetching JPG label:', error);
-      alert('An error occurred while fetching the JPG label.');
-    }
-    this.isLoading = false;
-  }
-
-  printUps() {
-    if (this.gifBase64) {
-      // Create an image element to hold the label
-      const printWindow = window.open('', '', 'height=500,width=800');
-      const imgElement = `<img src="data:image/gif;base64,${this.gifBase64}" alt="UPS Label" />`;
-      if(printWindow) {
-        printWindow.document.write(imgElement);
-        printWindow.document.close();
-        printWindow.print();
-      }
-    } else {
-      alert('No label available for printing.');
+      console.error(`Error fetching ${carrier} label:`, error);
     }
   }
 
-  saveUps() {
-    if (this.gifBase64) {
-      const link = document.createElement('a');
-      link.href = `data:image/gif;base64,${this.gifBase64}`;
-      link.download = 'UPS_Label.gif';  // You can change the file name as needed
-      link.click();
-    } else {
-      alert('No label available to save.');
-    }
-  }
-  printFedEx() {
-    if (this.pngBase64) {
-      // Create an image element to hold the label
-      const printWindow = window.open('', '', 'height=500,width=800');
-      const imgElement = `<img src="data:image/png;base64,${this.pngBase64}" alt="Fedex Label" />`;
-      if(printWindow) {
-        printWindow.document.write(imgElement);
-        printWindow.document.close();
-        printWindow.print();
-      }
-    } else {
-      alert('No label available for printing.');
+  printLabel(label: { carrier: string, base64: string, imageFormat: string }) {
+    const printWindow = window.open('', '', 'height=500,width=800');
+    const imgElement = `<img src="data:image/${label.imageFormat.toLowerCase()};base64,${label.base64}" alt="${label.carrier} Label" />`;
+    if (printWindow) {
+      printWindow.document.write(imgElement);
+      printWindow.document.close();
+      printWindow.print();
     }
   }
 
-  saveFedEx() {
-    if (this.pngBase64) {
-      const link = document.createElement('a');
-      link.href = `data:image/png;base64,${this.pngBase64}`;
-      link.download = 'UPS_Label.png';
-      link.click();
-    } else {
-      alert('No label available to save.');
-    }
-  }
-  printUsps() {
-    if (this.base64Jpg) {
-      // Create an image element to hold the label
-      const printWindow = window.open('', '', 'height=500,width=800');
-      const imgElement = `<img src="data:image/jpg;base64,${this.base64Jpg}" alt="USPS Label" />`;
-      if(printWindow) {
-        printWindow.document.write(imgElement);
-        printWindow.document.close();
-        printWindow.print();
-      }
-    } else {
-      alert('No label available for printing.');
-    }
+  saveLabel(label: { carrier: string, base64: string, imageFormat: string }) {
+    const link = document.createElement('a');
+    link.href = `data:image/${label.imageFormat.toLowerCase()};base64,${label.base64}`;
+    link.download = `${label.carrier}_Label.${label.imageFormat.toLowerCase()}`;
+    link.click();
   }
 
-  saveUsps() {
-    if (this.base64Jpg) {
-      const link = document.createElement('a');
-      link.href = `data:image/jpg;base64,${this.base64Jpg}`;
-      link.download = 'UPS_Label.jpg';
-      link.click();
-    } else {
-      alert('No label available to save.');
+  printAllLabels(): void {
+    if (this.labels.length === 0) {
+      alert("No labels available to print.");
+      return;
+    }
+  
+    // Create a printable window content
+    const printableContent = this.labels.map(label => `
+      <div style="text-align: center; margin-bottom: 20px; page-break-after: always;">
+        <img src="data:image/${label.imageFormat.toLowerCase()};base64,${label.base64}" 
+             alt="${label.carrier} Label" 
+             class="${label.imageFormat.toLowerCase() === 'gif' ? 'rotatable' : ''}"/>
+      </div>
+    `).join("");
+  
+    // Open a new window or tab and write the content
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Print Labels</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+              }
+              img {
+                display: block;
+                width: 100%; /* Full width of the page */
+                height: 100vh; /* Full height of the page */
+                object-fit: contain; /* Maintain aspect ratio */
+              }
+              .rotatable {
+                transform: rotate(90deg);
+                transition: transform 0.3s ease;
+                object-fit: contain; /* Ensures the image stays within its container */
+              }
+              /* Ensures each label is printed on a new page */
+              @media print {
+                div {
+                  page-break-after: always;
+                }
+                html, body {
+                  width: 100%;
+                  height: 100%;
+                  margin: 0;
+                  padding: 0;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            ${printableContent}
+            <script>
+              window.onload = function () {
+                window.print();
+                window.close();
+              };
+            </script>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
     }
   }
+  
 }
