@@ -1,0 +1,82 @@
+.full-width {
+    width: 100%;
+}
+
+.rate-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.rate-card.selected {
+    border: 2px solid #007bff;
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+}
+
+//
+
+@media screen and (max-width: 768px) {
+    .image-ups-usps {
+        height: 30px !important;
+    }
+
+    .image-fedex {
+        height: 10px !important;
+    }
+
+    .service-cell {
+        min-width: 120px !important;
+    }
+}
+
+.service-image {
+    display: flex !important;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    vertical-align: middle;
+    text-align: center;
+    margin-left: 15px;
+}
+
+.image-ups-usps {
+    height: 50px;
+    width: auto;
+    border-radius: 5px;
+}
+
+.image-fedex {
+    height: 24px;
+    width: auto;
+}
+
+.mat-header-cell {
+    font-weight: bold;
+    font-size: 1em;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-elevation-z8 {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+th.mat-header-cell {
+    text-align: left;
+}
+
+td.mat-cell {
+    padding: 8px;
+}
+
+/* Wrapper for horizontal scrolling */
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}

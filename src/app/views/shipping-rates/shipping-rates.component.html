@@ -1,0 +1,263 @@
+<div class="p-4 mb-4">
+    <mat-card appearance="outlined">
+        <mat-card-content>Shipping Rates</mat-card-content>
+
+        <div class="container">
+            <form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+                <!-- To Address -->
+                <h3>To Address</h3>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="toName" placeholder="Enter Name" />
+                            <mat-error *ngIf="addressForm.get('toName')?.hasError('required')">
+                                Name is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Street</mat-label>
+                            <input matInput formControlName="toStreet1" placeholder="Enter Street" />
+                            <mat-error *ngIf="addressForm.get('toStreet1')?.hasError('required')">
+                                Street is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>City</mat-label>
+                            <input matInput formControlName="toCity" placeholder="Enter City" />
+                            <mat-error *ngIf="addressForm.get('toCity')?.hasError('required')">
+                                City is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>State</mat-label>
+                            <input matInput formControlName="toState" placeholder="Enter State" />
+                            <mat-error *ngIf="addressForm.get('toState')?.hasError('required')">
+                                State is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>ZIP</mat-label>
+                            <input matInput formControlName="toZip" placeholder="Enter ZIP" />
+                            <mat-error *ngIf="addressForm.get('toZip')?.hasError('required')">
+                                ZIP is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Country</mat-label>
+                            <input matInput formControlName="toCountry" placeholder="Enter Country" />
+                            <mat-error *ngIf="addressForm.get('toCountry')?.hasError('required')">
+                                Country is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Phone</mat-label>
+                            <input matInput formControlName="toPhone" placeholder="Enter Phone" />
+                            <mat-error *ngIf="addressForm.get('toPhone')?.hasError('required')">
+                                Phone is required
+                            </mat-error>
+                            <mat-error *ngIf="addressForm.get('toPhone')?.hasError('pattern')">
+                                Invalid phone number
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="toEmail" placeholder="Enter Email" />
+                            <mat-error *ngIf="addressForm.get('toEmail')?.hasError('required')">
+                                Email is required
+                            </mat-error>
+                            <mat-error *ngIf="addressForm.get('toEmail')?.hasError('email')">
+                                Invalid email address
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- From Address -->
+                <h3>From Address</h3>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="fromName" placeholder="Enter Name" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Street</mat-label>
+                            <input matInput formControlName="fromStreet1" placeholder="Enter Street" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>City</mat-label>
+                            <input matInput formControlName="fromCity" placeholder="Enter City" />
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>State</mat-label>
+                            <input matInput formControlName="fromState" placeholder="Enter State" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>ZIP</mat-label>
+                            <input matInput formControlName="fromZip" placeholder="Enter ZIP" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Country</mat-label>
+                            <input matInput formControlName="fromCountry" placeholder="Enter Country" />
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Phone</mat-label>
+                            <input matInput formControlName="fromPhone" placeholder="Enter Phone" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="fromEmail" placeholder="Enter Email" />
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Parcel Info -->
+                <h3>Parcel Info</h3>
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Length</mat-label>
+                            <input matInput type="number" formControlName="parcelLength" placeholder="Enter Length" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Width</mat-label>
+                            <input matInput type="number" formControlName="parcelWidth" placeholder="Enter Width" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Height</mat-label>
+                            <input matInput type="number" formControlName="parcelHeight" placeholder="Enter Height" />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Weight</mat-label>
+                            <input matInput type="number" formControlName="parcelWeight" placeholder="Enter Weight" />
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <button type="submit" mat-raised-button color="primary">
+                            Get Rates
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+      
+       <!-- table -->
+       <div class="container table-responsive mt-4" *ngIf="rates.length > 0">
+        <form [formGroup]="rateSelectionForm" (ngSubmit)="onRateSelectionSubmit()">
+            <table mat-table [dataSource]="rates" class="mat-elevation-z8" matSort>
+                
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Select </th>
+                    <td mat-cell *matCellDef="let rate">
+                        <input type="checkbox"  [checked]="rate.selected" (change)="onRateChecked(rate)">
+                    </td>
+                </ng-container>
+                
+                <!-- Carrier Column -->
+                <ng-container matColumnDef="carrier">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Courier </th>
+                    <td mat-cell *matCellDef="let rate">
+                        <div class="row service-cell">
+                            <div class="col-3 d-flex service-image">
+                                <img [src]="getCarrierImage(rate.carrier)" alt="{{ rate.service }}"
+                                    class="image-fluid full-size" [ngClass]="{
+                                        'image-ups-usps': rate.carrier === 'UPS' || rate.carrier === 'USPS',
+                                        'image-fedex': rate.carrier === 'FedEx'
+                                    }" />
+                            </div>
+                            <div class="col-4">
+                                <div class="d-block">
+                                    <span>{{ rate.carrier }}</span>
+                                    <mat-chip>One fish</mat-chip>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+    
+                <!-- Delivery Days Column -->
+                <ng-container matColumnDef="est_delivery_days">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Delivery Days </th>
+                    <td mat-cell *matCellDef="let rate"> {{ rate.est_delivery_days }} Working Days </td>
+                </ng-container>
+    
+                <!-- Mode Column -->
+                <ng-container matColumnDef="mode">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tracking </th>
+                    <td mat-cell *matCellDef="let rate"> {{ rate.mode }} </td>
+                </ng-container>
+    
+                <!-- Rate Column -->
+                <ng-container matColumnDef="rate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cost </th>
+                    <td mat-cell *matCellDef="let rate" style="font-weight: bold;"> {{ rate.rate | currency: rate.currency }} </td>
+                </ng-container>
+    
+                <!-- Header and Row Definitions -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+    
+            <!-- Submit Button -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <button type="submit" mat-raised-button color="primary">
+                        Submit Selected Rates
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+
+
+    </mat-card>
+</div>

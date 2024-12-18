@@ -45,10 +45,24 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'shipping_rates',
+        path: 'shipping-rates',
         loadChildren: () =>
-          import('./views/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
+          import('./views/shipping-rates/shipping-rates.module').then(
+            (m) => m.ShippingRatesModule
+          ),
+      },
+      {
+        path: 'tracking-page',
+        loadChildren: () =>
+          import('./views/tracking-page/tracking-page.module').then(
+            (m) => m.TrackingPageModule
+          ),
+      },
+      {
+        path: 'image-display',
+        loadChildren: () =>
+          import('./views/image-display/image-display.module').then(
+            (m) => m.ImageDisplayModule
           ),
       },
     ],

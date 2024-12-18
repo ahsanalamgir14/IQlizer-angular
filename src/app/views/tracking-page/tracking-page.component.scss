@@ -1,0 +1,89 @@
+// .timeline {
+//     position: relative;
+//     padding-left: 20px;
+//     border-left: 2px solid #007bff;
+//     margin-top: 10px;
+//   }
+
+//   .timeline-item {
+//     display: flex;
+//     align-items: flex-start;
+//     margin-bottom: 20px;
+//     position: relative;
+//   }
+
+//   .timeline-dot {
+//     width: 10px;
+//     height: 10px;
+//     background-color: #007bff;
+//     border-radius: 50%;
+//     position: absolute;
+//     left: -6px;
+//     top: 0;
+//   }
+
+//   .timeline-content {
+//     margin-left: 15px;
+//   }
+
+//   .text-muted {
+//     color: #6c757d;
+//   }
+
+.date-container {
+    min-width: 300px;
+}
+
+.border-start {
+    border-color: #333 !important;
+    letter-spacing: -0.2px;
+    line-height: 21px;
+    font-size: 12px;
+}
+
+.date-span {
+    color: #333 !important;
+}
+
+.tracking-page {
+    .border-start {
+        border-color: #ccc;
+        position: relative;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        top: 0px;
+        left: -20px;
+        width: 7px;
+        height: 7px;
+        background-color: #333;
+        /* Dot color */
+        border-radius: 50%;
+    }
+
+    .d-flex {
+        align-items: flex-start;
+    }
+
+    .ms-3 {
+        margin-left: 1rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .text-primary {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+}
+
+@media (max-width: 768px) {
+    .date-container {
+        min-width: 90px;
+    }
+}
+
+

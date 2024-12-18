@@ -1,0 +1,35 @@
+<div class="p-4 mb-4">
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <h3>Label Display</h3>
+    </mat-card-content>
+
+    <div *ngIf="isLoading" class="d-flex justify-content-center">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <div *ngIf="!isLoading && labels.length === 0" class="text-center">
+      <p>No data passed, please select data from shipping rates to generate label</p>
+    </div>
+
+    <div *ngIf="!isLoading && labels.length > 0" class="image-display-container">
+
+      <div class="d-flex justify-content-end mb-4">
+        <button mat-raised-button color="primary" (click)="printAllLabels()">Print All Labels</button>
+      </div>
+
+      <div *ngFor="let label of labels" class="text-center">
+        <h4>{{ label.carrier }} Label</h4>
+        <div class="container">
+          <div class="button-group d-flex justify-content-center align-items-center w-100 mb-4">
+            <!-- <button mat-raised-button color="primary" (click)="printLabel(label)">Print</button> -->
+            <button mat-raised-button color="primary" (click)="saveLabel(label)">Save</button>
+          </div>
+        </div>
+        <img [src]="'data:image/' + label.imageFormat.toLowerCase() + ';base64,' + label.base64"
+          [alt]="label.carrier + ' Label'" class="img-thumbnail mb-2"
+          [ngClass]="{'rotatable': label.imageFormat.toLowerCase() === 'gif'}" />
+      </div>
+    </div>
+  </mat-card>
+</div>
